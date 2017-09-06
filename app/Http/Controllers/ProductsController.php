@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\ProductService;
-use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Http\Requests\ProductRequest;
 
@@ -13,8 +12,8 @@ class ProductsController extends Controller
 
     /**
      * Create new instance of ProductsController
-     * 
-     * @param App\Services\ProductService $service
+     *
+     * @param ProductService $service
      * @return void
      */
     public function __construct(ProductService $service) {
@@ -45,12 +44,12 @@ class ProductsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\ProductRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(ProductRequest $request)
     {
-        $createdProduct = $this->ProductService->create($request->all());
+        $createdProduct = $this->productService->create($request->all());
 
         return redirect(route('products.edit', $createdProduct->id));
     }
@@ -82,13 +81,14 @@ class ProductsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\ProductRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProductRequest $request, $id)
     {
-        //
+        $this->productService->update($id, $request->all());
+        return $this->index();
     }
 
     /**
@@ -99,6 +99,7 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $this->productService->delete($id);
+        return $this->index();
     }
 }

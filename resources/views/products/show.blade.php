@@ -21,6 +21,6 @@
         Price: {{ $product->price }}
     </div>
     <div>
-        <a href="{{ route('products.index') }}">Back</a>
+        <a href="{{ route('products.index') }}" class="btn btn-default">Back</a>
     </div>
 @endsection

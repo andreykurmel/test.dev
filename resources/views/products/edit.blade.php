@@ -10,13 +10,13 @@
     @include('partials.errors.list');
 
     <div class="col-md-6">
-        {!! Form::model($product, ['url' => route('products.store'), 'class' => 'form-horizontal']) !!}
+        {!! Form::model($product, ['url' => route('products.update', $product->id), 'class' => 'form-horizontal']) !!}
             {{ method_field('PUT') }}
             
-            @include('products.partials.form');
+            @include('products.partials.form')
 
             <div class="form-group">
-                {!! Form::submit('Add', ['class' => 'btn btn-primary']) !!}
+                {!! Form::submit('Update', ['class' => 'btn btn-primary']) !!}
                 <a href="{{ route('products.index') }}" class="btn btn-default">Cancel</a>
             </div>
         {!! Form::close() !!}
