@@ -34,7 +34,7 @@ class ProductRepository
         $pdc->description = $data['description'];
         $pdc->inStock = $data['inStock'];
         $pdc->price = $data['price'];
-        //$pdc->updated_at = Carbon::now();
+        $pdc->updated_at = Carbon::now();
 
         return $pdc->save();
     }
@@ -42,10 +42,29 @@ class ProductRepository
     /**
      * Delete selected Products
      *
-     * @param $id
+     * @param int $id
      * @return int
      */
     public function delete($id) {
         return Product::destroy($id);
+    }
+
+    /**
+     * Get all products
+     *
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function getAll() {
+        return Product::all();
+    }
+
+    /**
+     * Get Products which are belongs to user
+     *
+     * @param int $id
+     * @return \Illuminate\Support\Collection
+     */
+    public function getByUserId($id) {
+        return Product::where('userId', '=', $id)->get();
     }
 }

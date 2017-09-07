@@ -51,4 +51,23 @@ class ProductService
     public function delete($id) {
         return $this->productRepository->delete($id);
     }
+
+    /**
+     * Get all Products
+     *
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|static[]
+     */
+    public function getAll() {
+        return $this->productRepository->getAll();
+    }
+
+    /**
+     * Get Products which are belongs to user
+     *
+     * @param int $id
+     * @return \Illuminate\Support\Collection
+     */
+    public function getByUserId($id) {
+        return $this->productRepository->getByUserId($id);
+    }
 }

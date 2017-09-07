@@ -7,16 +7,22 @@
 @endsection
 
 @section('content')
-    @include('partials.errors.list');
+    @include('partials.errors.list')
 
     <div class="col-md-6">
-        {!! Form::open(['url' => route('products.store'), 'class' => 'form-horizontal']) !!}
+        {!! Form::open(['url' => route($routePrefix.'products.store'), 'class' => 'form-horizontal']) !!}
 
-            @include('products.partials.form');
+            @include('products.partials.form')
 
             <div class="form-group">
+                {!! Form::label('userId', 'Owner:', ['class' => 'form-label col-xs-2']) !!}
+                <div class="col-xs-10">
+                    {!! Form::select('userId', $users, null, ['class' => 'form-control']) !!}
+                </div>
+            </div>
+            <div class="form-group">
                 {!! Form::submit('Add', ['class' => 'btn btn-primary']) !!}
-                <a href="{{ route('products.index') }}" class="btn btn-default">Cancel</a>
+                <a href="{{ route($routePrefix.'products.index') }}" class="btn btn-default">Cancel</a>
             </div>
         {!! Form::close() !!}
     </div>

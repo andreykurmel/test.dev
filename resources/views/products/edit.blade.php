@@ -7,17 +7,17 @@
 @endsection
 
 @section('content')
-    @include('partials.errors.list');
+    @include('partials.errors.list')
 
     <div class="col-md-6">
-        {!! Form::model($product, ['url' => route('products.update', $product->id), 'class' => 'form-horizontal']) !!}
+        {!! Form::model($product, ['url' => route($routePrefix.'products.update', $product->id), 'class' => 'form-horizontal']) !!}
             {{ method_field('PUT') }}
             
             @include('products.partials.form')
 
             <div class="form-group">
                 {!! Form::submit('Update', ['class' => 'btn btn-primary']) !!}
-                <a href="{{ route('products.index') }}" class="btn btn-default">Cancel</a>
+                <a href="{{ route($routePrefix.'products.index') }}" class="btn btn-default">Cancel</a>
             </div>
         {!! Form::close() !!}
     </div>

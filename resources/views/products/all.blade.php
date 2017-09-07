@@ -5,17 +5,48 @@
 @endsection
 
 @section('content')
-    @foreach($products as $pdc)
-        <div style="margin-top: 10px;">
-            <a href="{{ route('products.show', $pdc->id) }}" class="btn btn-default">{{ $pdc->name }}</a>
-            <a href="{{ route('products.edit', $pdc->id) }}" class="btn btn-warning">Edit</a>
-            {{ Form::open(['url' => route('products.destroy', $pdc->id), 'method' => 'DELETE', 'style' => 'display: inline-block']) }}
-                {{ Form::submit('Delete', ['class' => 'btn btn-danger']) }}
-            {{ form::close() }}
+    <div class="row">
+        @foreach($products as $pdc)
+            <div style="margin-top: 10px;" class="col-xs-12">
+                <a href="{{ route($routePrefix.'products.show', $pdc->id) }}">
+                    <div class="col-xs-9 col-sm-6 col-sm-4 col-lg-3 btn btn-default">
+                        {{ $pdc->name }}
+                    </div>
+                </a>
+
+                @auth
+                    @if (Auth::user()->id == $pdc->user->id)
+                        <span class="dropdown">
+                            <a href="#" class="dropdown-toggle btn btn-default" data-toggle="dropdown" role="button" aria-expanded="false">
+                                <i class="glyphicon glyphicon-option-horizontal"></i>
+                            </a>
+
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="{{ route($routePrefix.'products.edit', $pdc->id) }}">Edit</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route($routePrefix.'products.destroy', $pdc->id) }}"
+                                       onclick="event.preventDefault();
+                                            document.getElementById('destroy-product{{ $pdc->id }}').submit();">
+                                        Delete
+                                    </a>
+                                    {{ Form::open(['url' => route($routePrefix.'products.destroy', $pdc->id), 'method' => 'DELETE', 'style' => 'display: none;', 'id' => 'destroy-product'.$pdc->id]) }}
+                                    {{ form::close() }}
+                                </li>
+                            </ul>
+                        </span>
+                    @else
+                        <span class="btn">Owner: {{ $pdc->user->name }}</span>
+                    @endif
+                @endauth
+            </div>
+        @endforeach
+        <div style="margin-top: 25px;" class="col-xs-12">
+            @auth
+            <a href="{{ route($routePrefix.'products.create') }}" class="btn btn-primary">Add product</a>
+            @endauth
+            <a href="/" class="btn btn-default">Back</a>
         </div>
-    @endforeach
-    <div style="margin-top: 25px;">
-        <a href="{{ route('products.create') }}" class="btn btn-primary">Add product</a>
-        <a href="/" class="btn btn-default">Back</a>
     </div>
 @endsection

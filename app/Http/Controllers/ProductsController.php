@@ -4,11 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Services\ProductService;
 use App\Models\Product;
+use App\Models\User;
 use App\Http\Requests\ProductRequest;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 class ProductsController extends Controller
 {
-    protected $productService;
+    private $productService;
+    private $routePrefix;
+
+    private function getRoutePrefix($after = '') {
+        $prefix = substr(Route::current()->getPrefix(), 1);
+        return ($prefix ? $prefix.$after : '');
+    }
 
     /**
      * Create new instance of ProductsController
@@ -27,8 +36,14 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
-        return view('products.all', compact('products'));
+        if ($this->getRoutePrefix() == 'user') {
+            $data['products'] = $this->productService->getByUserId(Auth::user()->id);
+        } else {
+            $data['products'] = $this->productService->getAll();
+        }
+
+        $data['routePrefix'] = $this->getRoutePrefix('.');
+        return view('products.all', $data);
     }
 
     /**
@@ -38,7 +53,9 @@ class ProductsController extends Controller
      */
     public function create()
     {
-        return view('products.create');
+        $data['users'] = array_pluck(User::all()->toArray(), 'name', 'id');
+        $data['routePrefix'] = $this->getRoutePrefix('.');
+        return view('products.create', $data);
     }
 
     /**
@@ -51,7 +68,7 @@ class ProductsController extends Controller
     {
         $createdProduct = $this->productService->create($request->all());
 
-        return redirect(route('products.edit', $createdProduct->id));
+        return redirect()->route($this->getRoutePrefix('.').'products.edit', $createdProduct->id);
     }
 
     /**
@@ -62,8 +79,9 @@ class ProductsController extends Controller
      */
     public function show($id)
     {
-        $product = Product::findOrFail($id);
-        return view('products.show', compact('product'));
+        $data['product'] = Product::findOrFail($id);
+        $data['routePrefix'] = $this->getRoutePrefix('.');
+        return view('products.show', $data);
     }
 
     /**
@@ -74,8 +92,9 @@ class ProductsController extends Controller
      */
     public function edit($id)
     {
-        $product = Product::findOrFail($id);
-        return view('products.edit', compact('product'));
+        $data['product'] = Product::findOrFail($id);
+        $data['routePrefix'] = $this->getRoutePrefix('.');
+        return view('products.edit', $data);
     }
 
     /**

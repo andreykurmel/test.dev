@@ -16,21 +16,24 @@ class ProductsSeeder extends Seeder
             'code' => 'tp123',
             'description' => 'some text here',
             'inStock' => 5,
-            'price' => 20.57
+            'price' => 20.57,
+            'userId' => 1
         ]);
         DB::table('products')->insert([
             'name' => 'some more',
             'code' => 'sm098',
             'description' => 'description of the product',
             'inStock' => 0,
-            'price' => 14.5
+            'price' => 14.5,
+            'userId' => 1
         ]);
         DB::table('products')->insert([
             'name' => 'name test',
             'code' => 'nt567',
             'description' => 'you can buy this product!',
             'inStock' => 99,
-            'price' => 0.12
+            'price' => 0.12,
+            'userId' => 2
         ]);
     }
 }

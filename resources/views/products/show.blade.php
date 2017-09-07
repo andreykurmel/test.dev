@@ -21,6 +21,9 @@
         Price: {{ $product->price }}
     </div>
     <div>
-        <a href="{{ route('products.index') }}" class="btn btn-default">Back</a>
+        Owner: {{ $product->user->name }}
+    </div>
+    <div>
+        <a href="{{ route($routePrefix.'products.index') }}" class="btn btn-default">Back</a>
     </div>
 @endsection

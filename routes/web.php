@@ -14,4 +14,11 @@
 Route::get('/', 'StaticPagesController@index');
 Route::get('/contacts', 'StaticPagesController@contacts');
 
-Route::resource('products', 'ProductsController');
+Route::resource('/products', 'ProductsController');
+
+Auth::routes();
+
+Route::get('/user', 'UserController@index')->name('home');
+Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
+    Route::resource('products', 'ProductsController');
+});
