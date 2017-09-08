@@ -5,9 +5,19 @@
 @endsection
 
 @section('content')
+    @if (Session::has('status_error'))
+        <div class="col-xs-12 alert alert-danger">
+            {{ Session::get('status_error') }}
+        </div>
+    @endif
+    @if (Session::has('status_info'))
+        <div class="col-xs-12 alert alert-info">
+            {{ Session::get('status_info') }}
+        </div>
+    @endif
     <div class="row">
-        @foreach($products as $pdc)
-            <div style="margin-top: 10px;" class="col-xs-12">
+        @foreach ($products as $pdc)
+            <div class="col-xs-12" style="margin-bottom: 10px;">
                 <a href="{{ route($routePrefix.'products.show', $pdc->id) }}">
                     <div class="col-xs-9 col-sm-6 col-sm-4 col-lg-3 btn btn-default">
                         {{ $pdc->name }}
@@ -42,7 +52,7 @@
                 @endauth
             </div>
         @endforeach
-        <div style="margin-top: 25px;" class="col-xs-12">
+        <div style="margin-top: 15px;" class="col-xs-12">
             @auth
             <a href="{{ route($routePrefix.'products.create') }}" class="btn btn-primary">Add product</a>
             @endauth
