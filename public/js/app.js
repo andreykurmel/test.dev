@@ -773,7 +773,8 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(9);
-module.exports = __webpack_require__(40);
+__webpack_require__(40);
+module.exports = __webpack_require__(41);
 
 
 /***/ }),
@@ -41980,6 +41981,23 @@ if (false) {
 
 /***/ }),
 /* 40 */
+/***/ (function(module, exports) {
+
+
+$(document).ready(function () {
+    $('.js-products-userSearch').select2({
+        placeholder: 'Select user',
+        ajax: {
+            url: '/user/ajax-search',
+            dataType: 'json',
+            delay: 250,
+            cache: true
+        }
+    });
+});
+
+/***/ }),
+/* 41 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

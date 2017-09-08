@@ -46,7 +46,7 @@ class ProductService
      * Delete Product by id
      *
      * @param $id
-     * @return int
+     * @return bool
      */
     public function delete($id) {
         return $this->productRepository->delete($id);

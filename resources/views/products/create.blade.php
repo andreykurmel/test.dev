@@ -17,7 +17,7 @@
             <div class="form-group">
                 {!! Form::label('userId', 'Owner:', ['class' => 'form-label col-xs-2']) !!}
                 <div class="col-xs-10">
-                    {!! Form::select('userId', $users, null, ['class' => 'form-control']) !!}
+                    {!! Form::select('userId', [], null, ['class' => 'form-control js-products-userSearch']) !!}
                 </div>
             </div>
             <div class="form-group">

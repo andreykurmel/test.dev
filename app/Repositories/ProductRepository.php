@@ -27,26 +27,19 @@ class ProductRepository
      * @return bool
      */
     public function update($id, $data) {
-        $pdc = Product::findOrFail($id);
-
-        $pdc->name = $data['name'];
-        $pdc->code = $data['code'];
-        $pdc->description = $data['description'];
-        $pdc->inStock = $data['inStock'];
-        $pdc->price = $data['price'];
-        $pdc->updated_at = Carbon::now();
-
-        return $pdc->save();
+        $pdc = Product::find($id);
+        return ($pdc ? $pdc->update($data) : false);
     }
 
     /**
-     * Delete selected Products
+     * Delete selected Product
      *
      * @param int $id
      * @return int
      */
     public function delete($id) {
-        return Product::destroy($id);
+        $pdc = Product::find($id);
+        return ($pdc ? $pdc->delete() : false);
     }
 
     /**

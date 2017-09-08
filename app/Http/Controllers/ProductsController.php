@@ -6,7 +6,7 @@ use App\Services\ProductService;
 use App\Models\Product;
 use App\Models\User;
 use App\Http\Requests\ProductRequest;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ProductsController extends Controller
@@ -14,19 +14,19 @@ class ProductsController extends Controller
     private $productService;
     private $routePrefix;
 
-    private function getRoutePrefix($after = '') {
-        $prefix = substr(Route::current()->getPrefix(), 1);
-        return ($prefix ? $prefix.$after : '');
-    }
-
     /**
      * Create new instance of ProductsController
      *
      * @param ProductService $service
-     * @return void
+     * @param Request $request
      */
-    public function __construct(ProductService $service) {
+    public function __construct(ProductService $service, Request $request) {
         $this->productService = $service;
+
+        //without this not working console (php artisan route:list)
+        if ($request->route()) {
+            $this->routePrefix = substr($request->route()->getPrefix(), 1);
+        }
     }
 
     /**
@@ -36,13 +36,14 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        if ($this->getRoutePrefix() == 'user') {
+        if ($this->routePrefix == 'user') {
             $data['products'] = $this->productService->getByUserId(Auth::user()->id);
         } else {
             $data['products'] = $this->productService->getAll();
         }
 
-        $data['routePrefix'] = $this->getRoutePrefix('.');
+        $data['messages'] = session('status');
+        $data['routePrefix'] = $this->routePrefix ? $this->routePrefix.'.' : '';
         return view('products.all', $data);
     }
 
@@ -53,8 +54,7 @@ class ProductsController extends Controller
      */
     public function create()
     {
-        $data['users'] = array_pluck(User::all()->toArray(), 'name', 'id');
-        $data['routePrefix'] = $this->getRoutePrefix('.');
+        $data['routePrefix'] = $this->routePrefix ? $this->routePrefix.'.' : '';
         return view('products.create', $data);
     }
 
@@ -68,32 +68,33 @@ class ProductsController extends Controller
     {
         $createdProduct = $this->productService->create($request->all());
 
-        return redirect()->route($this->getRoutePrefix('.').'products.edit', $createdProduct->id);
+        $route = ($this->routePrefix ? $this->routePrefix.'.' : '') . 'products.edit';
+        return redirect()->route($route, $createdProduct->id);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Product $product
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show($id)
+    public function show(Product $product)
     {
-        $data['product'] = Product::findOrFail($id);
-        $data['routePrefix'] = $this->getRoutePrefix('.');
+        $data['product'] = $product;
+        $data['routePrefix'] = $this->routePrefix ? $this->routePrefix.'.' : '';
         return view('products.show', $data);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Product $product
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(Product $product)
     {
-        $data['product'] = Product::findOrFail($id);
-        $data['routePrefix'] = $this->getRoutePrefix('.');
+        $data['product'] = $product;
+        $data['routePrefix'] = $this->routePrefix ? $this->routePrefix.'.' : '';
         return view('products.edit', $data);
     }
 
@@ -106,19 +107,36 @@ class ProductsController extends Controller
      */
     public function update(ProductRequest $request, $id)
     {
-        $this->productService->update($id, $request->all());
-        return $this->index();
+        $result = $this->productService->update($id, $request->all());
+
+        if ($result) {
+            $request->session()->flash('status.info', 'Successfully updated.');
+        } else {
+            $request->session()->flash('status.error', 'Product not found.');
+        }
+
+        $route = ($this->routePrefix ? $this->routePrefix.'.' : '') . 'products.index';
+        return redirect()->route($route);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $this->productService->delete($id);
-        return $this->index();
+        $result = $this->productService->delete($id);
+
+        if ($result) {
+            $request->session()->flash('status.info', 'Successfully deleted.');
+        } else {
+            $request->session()->flash('status.error', 'Cannot find this product, maybe it has already been deleted?.');
+        }
+
+        $route = ($this->routePrefix ? $this->routePrefix.'.' : '') . 'products.index';
+        return redirect()->route($route);
     }
 }

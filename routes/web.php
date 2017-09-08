@@ -19,6 +19,7 @@ Route::resource('/products', 'ProductsController');
 Auth::routes();
 
 Route::get('/user', 'UserController@index')->name('home');
+Route::get('/user/ajax-search', 'UserController@ajaxSearch')->name('user.ajax-search');
 Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
     Route::resource('products', 'ProductsController');
 });
