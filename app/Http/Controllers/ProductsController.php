@@ -105,6 +105,7 @@ class ProductsController extends Controller
     public function edit(Request $request, $product)
     {
         $data['product'] = $this->productService->getProduct($product);
+        $this->authorize('update', $data['product']);
 
         if ( ! $data['product'] ) {
             $request->session()->flash('status_error', 'Sorry, product not found.');
@@ -143,7 +144,7 @@ class ProductsController extends Controller
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Request $request, $id)
+    public function destroy(ProductRequest $request, $id)
     {
         $result = $this->productService->delete($id);
 

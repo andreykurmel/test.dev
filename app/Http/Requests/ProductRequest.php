@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Repositories\ProductRepository;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,9 +13,25 @@ class ProductRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(ProductRepository $repo)
     {
-        return Auth::check();
+        switch ($this->method()) {
+            case 'POST':
+                $result = Auth::check();
+                break;
+
+            case 'PATCH':
+            case 'PUT':
+                $pdc = $repo->getProductById($this->route('product'));
+                $result = $this->user()->can('update', $pdc);
+                break;
+
+            case 'DELETE':
+                $pdc = $repo->getProductById($this->route('product'));
+                $result = $this->user()->can('delete', $pdc);
+                break;
+        }
+        return $result;
     }
 
     /**
@@ -24,18 +41,33 @@ class ProductRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = [
-            'name' => 'required',
-            'code' => 'required|unique:products,code',
-            'description' => 'required',
-            'inStock' => 'required|integer|min:0',
-            'price' => 'required|numeric|min:0'
-        ];
+        switch ($this->method()) {
+            case 'POST':
+                $rules = [
+                    'name' => 'required',
+                    'code' => 'required|unique:products,code',
+                    'description' => 'required',
+                    'inStock' => 'required|integer|min:0',
+                    'price' => 'required|numeric|min:0',
+                    'userId' => 'required|exists:users,id'
+                ];
+                break;
 
-        if ($this->method() == 'POST') {
-            $rules['userId'] = 'required|exists:users,id';
+            case 'PATCH':
+            case 'PUT':
+                $rules = [
+                    'name' => 'required',
+                    'code' => 'required',
+                    'description' => 'required',
+                    'inStock' => 'required|integer|min:0',
+                    'price' => 'required|numeric|min:0'
+                ];
+                break;
+
+            case 'DELETE':
+                $rules = [];
+                break;
         }
-
         return $rules;
     }
 }
