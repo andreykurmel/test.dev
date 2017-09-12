@@ -23,7 +23,10 @@ class ProductsController extends Controller
     public function __construct(ProductService $service, Request $request) {
         $this->productService = $service;
 
-        //without this not working console (php artisan route:list)
+        $this->middleware('auth', [
+            'except' => ['index', 'show']
+        ]);
+
         if ($request->route()) {
             $this->routePrefix = substr($request->route()->getPrefix(), 1);
         }
@@ -75,12 +78,19 @@ class ProductsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Product $product
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Request $request
+     * @param int $product
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function show(Product $product)
+    public function show(Request $request, $product)
     {
-        $data['product'] = $product;
+        $data['product'] = $this->productService->getProduct($product);
+
+        if ( ! $data['product'] ) {
+            $request->session()->flash('status_error', 'Sorry, product not found.');
+            return redirect()->route('products.index');
+        }
+
         $data['routePrefix'] = $this->routePrefix ? $this->routePrefix.'.' : '';
         return view('products.show', $data);
     }
@@ -88,12 +98,19 @@ class ProductsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Product $product
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Request $request
+     * @param int $product
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      */
-    public function edit(Product $product)
+    public function edit(Request $request, $product)
     {
-        $data['product'] = $product;
+        $data['product'] = $this->productService->getProduct($product);
+
+        if ( ! $data['product'] ) {
+            $request->session()->flash('status_error', 'Sorry, product not found.');
+            return redirect()->route('products.index');
+        }
+
         $data['routePrefix'] = $this->routePrefix ? $this->routePrefix.'.' : '';
         return view('products.edit', $data);
     }
@@ -133,7 +150,7 @@ class ProductsController extends Controller
         if ($result) {
             $request->session()->flash('status_info', 'Successfully deleted.');
         } else {
-            $request->session()->flash('status_error', 'Cannot find this product, maybe it has already been deleted?.');
+            $request->session()->flash('status_error', 'Cannot find this product, maybe it has already been deleted?');
         }
 
         $route = ($this->routePrefix ? $this->routePrefix.'.' : '') . 'products.index';

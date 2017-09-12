@@ -24,12 +24,18 @@ class ProductRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'name' => 'required',
-            'code' => 'required',
+            'code' => 'required|unique:products,code',
             'description' => 'required',
             'inStock' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0'
         ];
+
+        if ($this->method() == 'POST') {
+            $rules['userId'] = 'required|exists:users,id';
+        }
+
+        return $rules;
     }
 }

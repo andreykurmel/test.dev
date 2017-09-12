@@ -5,6 +5,8 @@
 @endsection
 
 @section('content')
+    @include('partials.errors.list')
+
     <div>
         <a href="{{ route('products.index') }}">Our products</a>
     </div>

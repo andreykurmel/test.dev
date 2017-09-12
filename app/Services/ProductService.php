@@ -28,6 +28,14 @@ class ProductService
      * @return \Illuminate\Database\Eloquent\Model
      */
     public function create($data) {
+        /*Validator::make($data, [
+            'name' => 'required',
+            'code' => 'required|unique:products,code',
+            'description' => 'required',
+            'inStock' => 'required|integer|min:0',
+            'price' => 'required|numeric|min:0'
+        ])->validate();*/
+
         return $this->productRepository->create($data);
     }
 
@@ -69,5 +77,19 @@ class ProductService
      */
     public function getByUserId($id) {
         return $this->productRepository->getByUserId($id);
+    }
+
+    /**
+     * Get Product
+     *
+     * @param mixed $product
+     * @return \Illuminate\Support\Collection
+     */
+    public function getProduct($product) {
+        if (is_numeric($product)) {
+            return $this->productRepository->getProductById($product);
+        } else {
+            return $this->productRepository->getProductByName($product);
+        }
     }
 }

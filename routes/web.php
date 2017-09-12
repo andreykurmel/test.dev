@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,15 +11,19 @@
 |
 */
 
-Route::get('/', 'StaticPagesController@index');
+Route::get('/', 'StaticPagesController@index')->name('root');
 Route::get('/contacts', 'StaticPagesController@contacts');
-
-Route::resource('/products', 'ProductsController');
 
 Auth::routes();
 
-Route::get('/user', 'UserController@index')->name('home');
-Route::get('/user/ajax-search', 'UserController@ajaxSearch')->name('user.ajax-search');
-Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
-    Route::resource('products', 'ProductsController');
+Route::middleware(['auth'])->group(function () {
+    Route::resource('/products', 'ProductsController')->except(['index', 'show']);
+
+    Route::get('/user', 'UserController@index')->name('home')->middleware('test');
+    Route::get('/user/ajax-search', 'UserController@ajaxSearch')->name('user.ajax-search');
+    Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
+        Route::resource('products', 'ProductsController');
+    });
 });
+
+Route::resource('/products', 'ProductsController')->only(['index', 'show']);

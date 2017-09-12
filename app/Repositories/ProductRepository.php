@@ -60,4 +60,23 @@ class ProductRepository
     public function getByUserId($id) {
         return Product::where('userId', '=', $id)->get();
     }
+
+    /**
+     * Get Product by id
+     *
+     * @param int $id
+     * @return \Illuminate\Support\Collection
+     */
+    public function getProductById($id) {
+        return Product::find($id);
+    }
+
+    /**
+     * Get Product by name
+     * @param $name
+     * @return \Illuminate\Support\Collection
+     */
+    public function getProductByName($name) {
+        return Product::where('name', 'LIKE', "%$name%")->get();
+    }
 }
