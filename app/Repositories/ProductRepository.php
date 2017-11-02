@@ -8,7 +8,7 @@ use Carbon\Carbon;
 /**
  *
  */
-class ProductRepository
+class ProductRepository implements ProductInterface
 {
     /**
      * Create new Product in database
@@ -67,7 +67,7 @@ class ProductRepository
      * @param int $id
      * @return \Illuminate\Support\Collection
      */
-    public function getProductById($id) {
+    public function getById($id) {
         return Product::find($id);
     }
 
@@ -76,7 +76,7 @@ class ProductRepository
      * @param $name
      * @return \Illuminate\Support\Collection
      */
-    public function getProductByName($name) {
+    public function getByName($name) {
         return Product::where('name', 'LIKE', "%$name%")->first();
     }
 
@@ -85,7 +85,7 @@ class ProductRepository
      * @param $code
      * @return \Illuminate\Support\Collection
      */
-    public function getProductByCode($code) {
+    public function getByCode($code) {
         return Product::where('code', '=', "$code")->first();
     }
 }

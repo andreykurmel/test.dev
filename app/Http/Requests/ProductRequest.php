@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Repositories\ProductRepository;
+use App\Repositories\ProductInterface;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,7 +13,7 @@ class ProductRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize(ProductRepository $repo)
+    public function authorize(ProductInterface $repo)
     {
         switch ($this->method()) {
             case 'POST':
@@ -22,12 +22,12 @@ class ProductRequest extends FormRequest
 
             case 'PATCH':
             case 'PUT':
-                $pdc = $repo->getProductById($this->route('product'));
+                $pdc = $repo->getById($this->route('product'));
                 $result = $this->user()->can('update', $pdc);
                 break;
 
             case 'DELETE':
-                $pdc = $repo->getProductById($this->route('product'));
+                $pdc = $repo->getById($this->route('product'));
                 $result = $this->user()->can('delete', $pdc);
                 break;
         }

@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Repositories\ProductRepository;
+use App\Repositories\ProductInterface;
 
 /**
 * 
@@ -14,10 +14,10 @@ class ProductService
     /**
      * Create instance of ProductService
      *
-     * @param \App\Repositories\ProductRepository $repo
+     * @param \App\Repositories\ProductInterface $repo
      * @return void
      */
-    public function __construct(ProductRepository $repo) {
+    public function __construct(ProductInterface $repo) {
         $this->productRepository = $repo;
     }
 
@@ -87,9 +87,9 @@ class ProductService
      */
     public function getProduct($product) {
         if (is_numeric($product)) {
-            return $this->productRepository->getProductById($product);
+            return $this->productRepository->getById($product);
         } else {
-            return $this->productRepository->getProductByCode($product);
+            return $this->productRepository->getByCode($product);
         }
     }
 }
