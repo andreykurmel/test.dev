@@ -13,7 +13,7 @@
         {!! Form::model($product, ['url' => route($routePrefix.'products.update', $product->id), 'class' => 'form-horizontal']) !!}
             {{ method_field('PUT') }}
             
-            @include('products.partials.form')
+            @include('products/partials/form')
 
             <div class="form-group">
                 {!! Form::submit('Update', ['class' => 'btn btn-primary']) !!}
@@ -22,3 +22,7 @@
         {!! Form::close() !!}
     </div>
 @endsection
+
+@push('scripts')
+    <script src="{{ URL::asset("js/product.edit.js")  }}"></script>
+@endpush

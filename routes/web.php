@@ -24,6 +24,8 @@ Route::middleware(['auth'])->group(function () {
     Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
         Route::resource('products', 'ProductsController');
     });
+    Route::get('/orders/create', 'OrdersController@create')->name('orders.create');
+    Route::post('/orders', 'OrdersController@store')->name('orders.store');
 });
 
 Route::resource('/products', 'ProductsController')->only(['index', 'show']);

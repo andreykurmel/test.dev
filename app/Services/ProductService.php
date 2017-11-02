@@ -89,7 +89,7 @@ class ProductService
         if (is_numeric($product)) {
             return $this->productRepository->getProductById($product);
         } else {
-            return $this->productRepository->getProductByName($product);
+            return $this->productRepository->getProductByCode($product);
         }
     }
 }

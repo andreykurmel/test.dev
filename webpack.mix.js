@@ -18,4 +18,10 @@ mix.js(
         ],
         'public/js/app.js'
     )
+    .js(
+        [
+            'resources/assets/js/product.edit.js'
+        ],
+        'public/js/product.edit.js'
+    )
    .sass('resources/assets/sass/app.scss', 'public/css');

@@ -77,6 +77,15 @@ class ProductRepository
      * @return \Illuminate\Support\Collection
      */
     public function getProductByName($name) {
-        return Product::where('name', 'LIKE', "%$name%")->get();
+        return Product::where('name', 'LIKE', "%$name%")->first();
+    }
+
+    /**
+     * Get Product by code
+     * @param $code
+     * @return \Illuminate\Support\Collection
+     */
+    public function getProductByCode($code) {
+        return Product::where('code', '=', "$code")->first();
     }
 }
